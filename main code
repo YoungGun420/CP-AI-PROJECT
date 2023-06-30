@@ -1,1 +1,159 @@
+import os
+import pyttsx3
+import pywhatkit
+import speech_recognition as sr
+import win32com.client
+import webbrowser
+import openai
+from config import apikey
+import datetime
+import smtplib
+import wikipedia
+import random
+
+
+chatStr = ""
+def chat(query):
+    global chatStr
+    openai.api_key = apikey
+    chatStr += f"Sir: {query}\n Jarvis"
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt= chatStr,
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    speak(response["choices"][0]["text"])
+    chatStr += response["choices"][0]["text"]
+    return response["choices"][0]["text"]
+
+
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+# print(voices[1].id)
+engine.setProperty('voice', voices[0].id)
+
+
+def ai(prompt):
+    openai.api_key = apikey
+    text = f"Openai response for prompt: {prompt} \n **********************\n\n"
+
+    response = openai.Completion.create(
+        model="text-davinci-003",
+        prompt=prompt,
+        temperature=1,
+        max_tokens=256,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    print(response["choices"][0]["text"])
+    text += response["choices"][0]["text"]
+    if not os.path.exists("Openai"):
+        os.mkdir("Openai")
+
+    # with open(f"Openai/prompt- {random.randint(1, 24343286382)}", "w") as f:
+    with open(f"Openai/{''.join(prompt.split('using')[1:])}.txt", "w") as f:
+        f.write(text)
+
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+
+speak("I am Jarvis Sir. Please tell me how may I help you")
+
+
+def takecommand():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        r.pause_threshold = 0.5
+        audio = r.listen(source)
+        try:
+            query = r.recognize_google(audio, language="eng-in")
+            print(f"User said {query}")
+            # speak(query)
+            return query
+        except Exception as e:
+            return "Some error occured .Sorry from Jarvis"
+
+
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('if21chiragpatil@gmail.com', 'rnzmdumjgvaorfvp')
+    server.sendmail('if21chiragpatil@gmail.com', to, content)
+    server.close()
+
+
+email_list = {
+    'dhruv': '',
+    'chirag': 'chiragpatil418@gmail.com',
+    'pranay': 'pranaykamble710@gmail.com',
+    'sudesh': 'sudeshgudalkar779@gmail.com',
+    'prajwal': ''
+}
+
+while 1:
+    while True:
+        print("Listening..")
+        query = takecommand()
+        sites = [["Youtube", "http://youtube.com"], ["google", "http://google.com"]]
+        for site in sites:
+            if f"Open {site[0]}".lower() in query.lower():
+                speak(f'Opening {site[0]} sir...')
+                webbrowser.open(site[1])
+
+        if "the time".lower() in query.lower():
+            now = datetime.datetime.now().strftime('%I:%M:%S')
+            speak(f"Sir the time is {now}")
+
+        if "send message".lower() in query.lower():
+            speak("What message you want to send")
+            msg = takecommand()
+            pywhatkit.sendwhatmsg("+919594280028", msg, 16, 24, 15, True, 2)
+
+        if 'send mail' in query:
+            try:
+                speak("To whom you what to send mail")
+                to = takecommand()
+                receiver = email_list[to]
+                print(receiver)
+                speak("What should I say?")
+                content = takecommand()
+                sendEmail(to, content)
+                speak("Email has been sent!")
+            except Exception as e:
+                print(e)
+                speak("Sorry sir. I am not able to send this mail")
+
+        if 'wikipedia'.lower() in query.lower():
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
+
+        if "open code".lower() in query.lower():
+            codePath = "C:\\Users\\CHIRAG PATIL\\PycharmProjects\\CP_AI_\\main.py"
+            os.startfile(codePath)
+
+        if "using ai".lower() in query.lower():
+            ai(prompt=query)
+
+        if "chat reset".lower() in query.lower():
+            chatStr = ""
+
+        if "Dismiss".lower() in query.lower():
+            exit()
+
+        else:
+            chat(query)
 
