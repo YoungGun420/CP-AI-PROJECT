@@ -16,7 +16,7 @@ chatStr = ""
 def chat(query):
     global chatStr
     openai.api_key = apikey
-    chatStr += f"Sir: {query}\n Jarvis"
+    chatStr += f"Sir: {query}\n No ah"
 
     response = openai.Completion.create(
         model="text-davinci-003",
@@ -66,7 +66,7 @@ def speak(audio):
     engine.runAndWait()
 
 
-speak("I am Jarvis Sir. Please tell me how may I help you")
+speak("I am No ah. Please tell me how may I help you")
 
 
 def takecommand():
@@ -80,24 +80,24 @@ def takecommand():
             # speak(query)
             return query
         except Exception as e:
-            return "Some error occured .Sorry from Jarvis"
+            return "Some error occured .Sorry from No ah"
 
 
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('if21chiragpatil@gmail.com', 'rnzmdumjgvaorfvp')
-    server.sendmail('if21chiragpatil@gmail.com', to, content)
+    server.login('dhruvsurve12@gmail.com', 'rnzmdumjgvaorfvp')
+    server.sendmail('dhruvsurve12@gmail.com', to, content)
     server.close()
 
 
 email_list = {
-    'dhruv': '',
+    'dhruv': 'dhruvsurve12@gmail.com',
     'chirag': 'chiragpatil418@gmail.com',
     'pranay': 'pranaykamble710@gmail.com',
     'sudesh': 'sudeshgudalkar779@gmail.com',
-    'prajwal': ''
+
 }
 
 while 1:
@@ -117,7 +117,7 @@ while 1:
         if "send message".lower() in query.lower():
             speak("What message you want to send")
             msg = takecommand()
-            pywhatkit.sendwhatmsg("+919594280028", msg, 16, 24, 15, True, 2)
+            pywhatkit.sendwhatmsg("+918554872103", msg, 17, 21, 8, True, 5)
 
         if 'send mail' in query:
             try:
@@ -142,7 +142,7 @@ while 1:
             speak(results)
 
         if "open code".lower() in query.lower():
-            codePath = "C:\\Users\\CHIRAG PATIL\\PycharmProjects\\CP_AI_\\main.py"
+            codePath = "C:\\Users\\DHRUV\\PycharmProjects\\CPai\\main.py"
             os.startfile(codePath)
 
         if "using ai".lower() in query.lower():
@@ -154,6 +154,7 @@ while 1:
         if "Dismiss".lower() in query.lower():
             exit()
 
+        if "bye-bye".lower() in query.lower():
+            exit()
         else:
             chat(query)
-
