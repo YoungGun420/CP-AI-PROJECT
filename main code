@@ -11,16 +11,17 @@ import smtplib
 import wikipedia
 import random
 
-
 chatStr = ""
+
+
 def chat(query):
     global chatStr
     openai.api_key = apikey
-    chatStr += f"Sir: {query}\n No ah"
+    chatStr += f"Sir: {query}\n Jarvis"
 
     response = openai.Completion.create(
         model="text-davinci-003",
-        prompt= chatStr,
+        prompt=chatStr,
         temperature=1,
         max_tokens=256,
         top_p=1,
@@ -66,7 +67,7 @@ def speak(audio):
     engine.runAndWait()
 
 
-speak("I am No ah. Please tell me how may I help you")
+speak("I am Jarvis Sir. Please tell me how may I help you")
 
 
 def takecommand():
@@ -80,51 +81,46 @@ def takecommand():
             # speak(query)
             return query
         except Exception as e:
-            return "Some error occured .Sorry from No ah"
+            return "Some error occured .Sorry from Jarvis"
 
 
 def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('dhruvsurve12@gmail.com', 'rnzmdumjgvaorfvp')
-    server.sendmail('dhruvsurve12@gmail.com', to, content)
+    server.login('if21chiragpatil@gmail.com', 'rnzmdumjgvaorfvp')
+    server.sendmail('if21chiragpatil@gmail.com', to, content)
     server.close()
 
-
-email_list = {
-    'dhruv': 'dhruvsurve12@gmail.com',
-    'chirag': 'chiragpatil418@gmail.com',
-    'pranay': 'pranaykamble710@gmail.com',
-    'sudesh': 'sudeshgudalkar779@gmail.com',
-
-}
 
 while 1:
     while True:
         print("Listening..")
         query = takecommand()
-        sites = [["Youtube", "http://youtube.com"], ["google", "http://google.com"]]
+        sites = [["Youtube", "http://youtube.com"], ["google", "http://google.com"],
+                 ["stack overflow", "https://stackoverflow.com"]]
         for site in sites:
+            # This code is for opening websites
             if f"Open {site[0]}".lower() in query.lower():
                 speak(f'Opening {site[0]} sir...')
                 webbrowser.open(site[1])
 
+        # This code is for showing time
         if "the time".lower() in query.lower():
             now = datetime.datetime.now().strftime('%I:%M:%S')
             speak(f"Sir the time is {now}")
 
-        if "send message".lower() in query.lower():
+        # This code is for send message through whatsapp
+        if "send a message".lower() in query.lower():
             speak("What message you want to send")
             msg = takecommand()
-            pywhatkit.sendwhatmsg("+918554872103", msg, 17, 21, 8, True, 5)
+            pywhatkit.sendwhatmsg("+919579361390", msg, datetime.datetime.now().hour, datetime.datetime.now().minute + 1
+                                  , 15, True, 5)
 
-        if 'send mail' in query:
+        # This code is for send email
+        if 'send a email' in query:
             try:
-                speak("To whom you what to send mail")
-                to = takecommand()
-                receiver = email_list[to]
-                print(receiver)
+                to = "neelasurve3@gmail.com"
                 speak("What should I say?")
                 content = takecommand()
                 sendEmail(to, content)
@@ -133,6 +129,7 @@ while 1:
                 print(e)
                 speak("Sorry sir. I am not able to send this mail")
 
+        # This code is for searching and showing results in wikipedia
         if 'wikipedia'.lower() in query.lower():
             speak('Searching Wikipedia...')
             query = query.replace("wikipedia", "")
@@ -141,20 +138,27 @@ while 1:
             print(results)
             speak(results)
 
+        # This code is for opening the code file
         if "open code".lower() in query.lower():
-            codePath = "C:\\Users\\DHRUV\\PycharmProjects\\CPai\\main.py"
+            codePath = "C:\\Users\\CHIRAG PATIL\\PycharmProjects\\CP_AI_\\main.py"
             os.startfile(codePath)
 
-        if "using ai".lower() in query.lower():
+        # This code is for creating files of the content you searched
+        if "Write".lower() in query.lower():
             ai(prompt=query)
 
+        # This code is for resetting chat
         if "chat reset".lower() in query.lower():
             chatStr = ""
 
+        # This code is for stopping the program when its running
         if "Dismiss".lower() in query.lower():
             exit()
 
+        # This code is for stopping the program when its running
         if "bye-bye".lower() in query.lower():
             exit()
+
+        #This code is for chatting with user
         else:
             chat(query)
